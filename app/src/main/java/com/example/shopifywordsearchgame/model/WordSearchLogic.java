@@ -23,7 +23,7 @@ public class WordSearchLogic {
                 setWords(words).
                 setOtherLetters().
                 build();
-        this.words = new ArraySet<>(Arrays.asList(words));
+        this.words = new ArraySet<>(grid.getPlacedWords());
     }
 
     public boolean attemptSolve(int row, int col, Direction dir, String word) {

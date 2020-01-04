@@ -38,8 +38,8 @@ public class GridBuilder {
             while (!placed && visited.size() < grid.getGridNumCols() * grid.getGridNumRows()) {
                 dir = Direction.getRandomDirection();
                 pos = new Point(
-                        random.nextInt(grid.getGridNumCols() - 1),
-                        random.nextInt(grid.getGridNumRows() - 1));
+                        random.nextInt(grid.getGridNumCols()),
+                        random.nextInt(grid.getGridNumRows()));
 
                 if (visited.contains(pos)) {
                     continue;
@@ -83,6 +83,7 @@ public class GridBuilder {
             );
         }
         placedWords.add(new Word(word, new Point(col, row), dir));
+        grid.addWord(word);
     }
 
     private boolean canPlaceWord(int row, int col, Direction dir, String word) {

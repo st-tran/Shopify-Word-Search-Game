@@ -4,6 +4,7 @@ import android.graphics.Point;
 import android.util.ArraySet;
 
 import com.example.shopifywordsearchgame.common.Direction;
+import com.example.shopifywordsearchgame.data.IWordService;
 import com.example.shopifywordsearchgame.model.WordSearchLogic;
 import com.example.shopifywordsearchgame.view.IWordSearchView;
 
@@ -23,12 +24,12 @@ public class WordSearchPresenter implements IWordSearchPresenter {
             int rows,
             int cols,
             IWordSearchView wordSearchView,
-            String[] words) {
+            IWordService wordLoader) {
         this.wordSearchView = wordSearchView;
 
         this.rows = rows;
         this.cols = cols;
-        gameBackend = new WordSearchLogic(rows, cols, words);
+        gameBackend = new WordSearchLogic(rows, cols, wordLoader.getWords());
 
         wordSearchView.setGrid(gameBackend.getGrid());
         wordSearchView.setWords(gameBackend.getWords().toArray(new String[0]));

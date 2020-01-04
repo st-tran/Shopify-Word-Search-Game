@@ -1,12 +1,15 @@
 package com.example.shopifywordsearchgame.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * A Grid of characters
  */
 public class Grid {
     private char[][] array;
+    private List<String> placedWords = new ArrayList<>();
 
     /**
      * @param numRows number of rows in this Grid
@@ -29,6 +32,14 @@ public class Grid {
 
     public int getGridNumCols() {
         return array[0].length;
+    }
+
+    public void addWord(String word) {
+        placedWords.add(word);
+    }
+
+    public List<String> getPlacedWords() {
+        return placedWords;
     }
 
     /**

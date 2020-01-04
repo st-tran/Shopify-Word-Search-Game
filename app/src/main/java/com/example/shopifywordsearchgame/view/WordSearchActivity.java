@@ -17,13 +17,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.shopifywordsearchgame.R;
+import com.example.shopifywordsearchgame.data.WordLoader;
+import com.example.shopifywordsearchgame.data.IWordService;
 import com.example.shopifywordsearchgame.presenter.IWordSearchPresenter;
 import com.example.shopifywordsearchgame.presenter.WordSearchPresenter;
 
 public class WordSearchActivity extends AppCompatActivity implements IWordSearchView {
     private final int ROWS = 10;
     private final int COLS = 10;
-    private final String[] words = new String[]{"Shopify", "Test", "Words"};
 
     private GridView gridView;
     private LinearLayout scrollViewContainer;
@@ -43,7 +44,8 @@ public class WordSearchActivity extends AppCompatActivity implements IWordSearch
         gridView = findViewById(R.id.game_grid);
         scrollViewContainer = findViewById(R.id.word_list);
 
-        presenter = new WordSearchPresenter(ROWS, COLS, this, words);
+        IWordService wordLoader = new WordLoader(getResources().openRawResource(R.raw.wordlist));
+        presenter = new WordSearchPresenter(ROWS, COLS, this, wordLoader);
     }
     @Override
     public void setWords(String[] words) {
