@@ -5,10 +5,10 @@ import android.util.ArraySet;
 
 import com.example.shopifywordsearchgame.common.Direction;
 
-import java.util.Arrays;
+import java.io.Serializable;
 import java.util.Set;
 
-public class WordSearchLogic {
+public class WordSearchLogic implements Serializable {
     private Grid grid;
     private Set<String> words;
     private Set<Word> foundWords = new ArraySet<>();

@@ -2,6 +2,7 @@ package com.example.shopifywordsearchgame.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,8 +47,13 @@ public class GridAdapter extends BaseAdapter {
     public View getView(int i, View view, ViewGroup parent) {
         if (view == null)
             view = inflater.inflate(R.layout.grid_cell, null);
-        int size = ((GridView) parent).getColumnWidth();
 
+        int size;
+        if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            size = ((GridView) parent).getColumnWidth();
+        } else {
+            size = parent.getHeight() / chars.length;
+        }
         TextView textView = view.findViewById(R.id.grid_cell_item);
         textView.setLayoutParams(new ConstraintLayout.LayoutParams(size, size));
         textView.setText(Character.toString((char) getItem(i)));

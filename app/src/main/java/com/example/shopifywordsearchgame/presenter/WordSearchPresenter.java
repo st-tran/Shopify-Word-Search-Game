@@ -16,6 +16,7 @@ public class WordSearchPresenter implements IWordSearchPresenter {
     private IWordSearchView wordSearchView;
     private WordSearchLogic gameBackend;
     private Set<Point> highlighted = new ArraySet<>();
+    private Set<String> solved = new ArraySet<>();
     private List<Point> visited = new ArrayList<>();
     private Direction currDirection;
     private int rows, cols;
@@ -102,6 +103,7 @@ public class WordSearchPresenter implements IWordSearchPresenter {
 
         if (gameBackend.attemptSolve(initPos.y, initPos.x, currDirection, result.toString())) {
             highlighted.addAll(visited);
+            solved.add(result.toString());
             wordSearchView.markWordSolved(result.toString());
         }
 
@@ -110,6 +112,32 @@ public class WordSearchPresenter implements IWordSearchPresenter {
         }
         visited.clear();
         currDirection = null;
+    }
+
+    @Override
+    public void onViewChanged() {
+        wordSearchView.setGrid(gameBackend.getGrid());
+        wordSearchView.setWords(gameBackend.getWords().toArray(new String[0]));
+        wordSearchView.setGridTouchListener();
+    }
+
+    @Override
+    public void updateView(IWordSearchView view) {
+        wordSearchView = view;
+    }
+
+    @Override
+    public void reHighlight() {
+        for (Point highlightedPoint : highlighted) {
+            wordSearchView.highlightCharAtPos(highlightedPoint.y, highlightedPoint.x);
+        }
+    }
+
+    @Override
+    public void reCrossout() {
+        for (String solvedWord : solved) {
+            wordSearchView.markWordSolved(solvedWord);
+        }
     }
 
     private Point getRowCol(int x, int y) {

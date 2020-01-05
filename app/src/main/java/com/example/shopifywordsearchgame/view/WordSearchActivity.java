@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.GridView;
 import android.widget.LinearLayout;
@@ -24,7 +25,7 @@ import com.example.shopifywordsearchgame.presenter.WordSearchPresenter;
 
 public class WordSearchActivity extends AppCompatActivity implements IWordSearchView {
     private final int ROWS = 10;
-    private final int COLS = 10;
+    private final int COLS = 15;
 
     private GridView gridView;
     private LinearLayout scrollViewContainer;
@@ -44,9 +45,34 @@ public class WordSearchActivity extends AppCompatActivity implements IWordSearch
         gridView = findViewById(R.id.game_grid);
         scrollViewContainer = findViewById(R.id.word_list);
 
-        IWordService wordLoader = new WordLoader(getResources().openRawResource(R.raw.wordlist));
-        presenter = new WordSearchPresenter(ROWS, COLS, this, wordLoader);
+        if (savedInstanceState == null) {
+            IWordService wordLoader = new WordLoader(getResources().openRawResource(R.raw.wordlist));
+            presenter = new WordSearchPresenter(ROWS, COLS, this, wordLoader);
+        } else {
+            presenter = (IWordSearchPresenter) savedInstanceState.getSerializable("presenter");
+            presenter.updateView(this);
+            presenter.onViewChanged();
+
+            final View root = findViewById(android.R.id.content);
+            ViewTreeObserver vto = root.getViewTreeObserver();
+            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    presenter.reHighlight();
+                    presenter.reCrossout();
+                    root.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+            });
+        }
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable("presenter", presenter);
+        super.onSaveInstanceState(outState);
+    }
+
+
     @Override
     public void setWords(String[] words) {
         for (String word : words) {
@@ -85,7 +111,7 @@ public class WordSearchActivity extends AppCompatActivity implements IWordSearch
 
     @Override
     public void unhighlightCharAtPos(int row, int col) {
-        getTextViewAt(row, col).setTextColor(Color.BLACK);
+        getTextViewAt(row, col).setTextColor(getColor(R.color.colorPrimary));
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -97,15 +123,15 @@ public class WordSearchActivity extends AppCompatActivity implements IWordSearch
                 int x = (int) event.getX();
                 int y = (int) event.getY();
 
-                // Touch event out of bounds
-                if (!(0 <= x && x <= gridView.getWidth() && 0 <= y && y <= gridView.getHeight())) {
-                    return false;
-                }
 
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     presenter.onPress(x, y);
                 } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
                     presenter.onMove(x, y);
+                    // Touch event out of bounds
+                    if (!(0 <= x && x <= gridView.getWidth() && 0 <= y && y <= gridView.getHeight())) {
+                        return false;
+                    }
                 } else {
                     presenter.onLiftUp();
                 }
