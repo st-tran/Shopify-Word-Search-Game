@@ -1,6 +1,8 @@
 package com.example.shopifywordsearchgame.view;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -8,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -60,6 +63,7 @@ public class WordSearchActivity extends AppCompatActivity implements IWordSearch
                 public void onGlobalLayout() {
                     presenter.reHighlight();
                     presenter.reCrossout();
+                    presenter.setSolved();
                     root.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 }
             });
@@ -136,6 +140,59 @@ public class WordSearchActivity extends AppCompatActivity implements IWordSearch
                     presenter.onLiftUp();
                 }
                 return true;
+            }
+        });
+    }
+
+    @Override
+    public void setSolved(String solvedText) {
+        ((TextView) findViewById(R.id.words_found)).setText(solvedText);
+    }
+
+    @Override
+    public void showGameFinishedPopup() {
+        final AppCompatActivity game = this;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(game);
+                builder.setCancelable(false);
+                builder.setTitle("All words found!");
+
+                LinearLayout rows = new LinearLayout(game);
+                rows.setOrientation(LinearLayout.VERTICAL);
+                builder.setView(rows);
+
+                LinearLayout cols = new LinearLayout(game);
+                cols.setOrientation(LinearLayout.HORIZONTAL);
+                cols.setLayoutParams(new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        1f
+                        ));
+                LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        0.5f);
+
+                final Button retryButton = new Button(game);
+                retryButton.setLayoutParams(buttonParams);
+                retryButton.setText(R.string.play_again);
+
+                retryButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        finish();
+                        Intent intent = new Intent(game, game.getClass());
+                        game.startActivity(intent);
+                    }
+                });
+                cols.addView(retryButton);
+                rows.addView(cols);
+
+                AlertDialog dialog = builder.create();
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();
             }
         });
     }

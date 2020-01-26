@@ -58,6 +58,10 @@ public class WordSearchLogic implements Serializable {
         return true;
     }
 
+    public boolean isGameOver() {
+        return words.size() == foundWords.size();
+    }
+
     public Set<String> getWords() {
         return new ArraySet<>(words);
     }

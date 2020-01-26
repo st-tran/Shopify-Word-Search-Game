@@ -7,6 +7,8 @@ public interface IWordSearchView {
     void highlightCharAtPos(int row, int col);
     void unhighlightCharAtPos(int row, int col);
     void setGridTouchListener();
+    void setSolved(String solvedText);
+    void showGameFinishedPopup();
     int getLetterHeight();
     int getLetterWidth();
 }

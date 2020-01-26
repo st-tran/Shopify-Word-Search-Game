@@ -11,5 +11,6 @@ public interface IWordSearchPresenter extends Serializable {
     void onViewChanged();
     void updateView(IWordSearchView view);
     void reHighlight();
+    void setSolved();
     void reCrossout();
 }

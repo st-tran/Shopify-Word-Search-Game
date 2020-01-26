@@ -35,6 +35,7 @@ public class WordSearchPresenter implements IWordSearchPresenter {
         wordSearchView.setGrid(gameBackend.getGrid());
         wordSearchView.setWords(gameBackend.getWords().toArray(new String[0]));
         wordSearchView.setGridTouchListener();
+        setSolved();
     }
 
     @Override
@@ -104,6 +105,7 @@ public class WordSearchPresenter implements IWordSearchPresenter {
         if (gameBackend.attemptSolve(initPos.y, initPos.x, currDirection, result.toString())) {
             highlighted.addAll(visited);
             solved.add(result.toString());
+            setSolved();
             wordSearchView.markWordSolved(result.toString());
         }
 
@@ -112,6 +114,10 @@ public class WordSearchPresenter implements IWordSearchPresenter {
         }
         visited.clear();
         currDirection = null;
+
+        if (gameBackend.isGameOver()) {
+            wordSearchView.showGameFinishedPopup();
+        }
     }
 
     @Override
@@ -131,6 +137,11 @@ public class WordSearchPresenter implements IWordSearchPresenter {
         for (Point highlightedPoint : highlighted) {
             wordSearchView.highlightCharAtPos(highlightedPoint.y, highlightedPoint.x);
         }
+    }
+
+    @Override
+    public void setSolved() {
+        wordSearchView.setSolved(solved.size() + "/" + gameBackend.getWords().size());
     }
 
     @Override

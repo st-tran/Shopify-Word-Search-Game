@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Shopify Word Search Game</string>
+    <string name="words_found">found</string>
+    <string name="play_again">Play Again</string>
 </resources>
